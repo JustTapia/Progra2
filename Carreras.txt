@@ -1,0 +1,7 @@
+13;Administracion de Empresas
+12;Ensenanza de la Matematica con Entornos Tecnologicos
+18;Gestion en Turismo Sostenible
+18;Ingenieria en Biotecnologia
+11;Ingenieria en Computacion
+14;Ingenieria en Diseno Industrial
+13;Administracion de Tecnologia de Informacion

@@ -1,0 +1,28 @@
+3605;12;2;Javier Ignacio Molina Cano
+5156;18;2;Lillian Eugenia Gomez Alvarez
+7550;13;2;Sixto Naranjo Marin
+6969;18;1;Gerardo Emilio Duque Gutierrez
+7013;12;2;Jhony Alberto Saenz Hurtado
+1082;14;1;German Antonio Lotero Upegui
+5225;11;2;Oscar Dario Murillo Gonzalez
+3353;18;2;Augusto Osorno Gil
+2673;14;1;Cesar Oswaldo Palacio Martinez
+3741;12;1;Gloria Amparo Alzate Agudelo
+8532;14;2;Hector Ivan Gonzalez Castano
+4782;12;1;Beatriz Elena Osorio Laverde
+4545;12;2;Herman Correa Ramirez
+3060;18;1;Carlos Mario Montoya Serna
+4282;12;2;Carlos Augusto Giraldo
+6538;14;2;Arturo Tabares Mora
+2008;13;2;William de J Ramirez Vasquez
+2755;18;2;Jaime Lopez Tobon
+1561;11;2;Gloria Elena Sanclemente Zea
+4509;14;2;Carlos Alberto Villegas Lopera
+9342;18;2;Jorge Uribe Botero
+3537;11;1;Maria Isabel Lopez Gaviria
+8188;18;1;Alfredo Tobon Tobon
+6212;11;1;Hector Damian Mosquera Benitez
+2292;13;2;Alvaro Ivan Berdugo Lopez
+5797;11;2;Carlos Alberto Zarate Yepez
+1386;11;1;Hernan Dario Hurtado Perez
+3019;18;2;Jorge Leon Ruiz Ruiz

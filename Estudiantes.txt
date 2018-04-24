@@ -1,0 +1,59 @@
+2015046602;14;John Jairo Duque Garcia;San Jose;49471705
+2016823158;13;Armid Benjamin Munoz Ramirez;Puntarenas;30075114
+2015137795;12;Elkin Octavio Diaz Perez;Limon;58960922
+2015856707;12;Julio Cesar Rodas Monsalve;Puntarenas;79700550
+2015789683;13;Gabriel Jaime Jimenez Gomez;Limon;44147250
+2017348423;13;Jose Didier Zapata Suarez;Guanacaste;82221847
+2015152082;13;Bernardo Posada Vera;Heredia;26679045
+2016634769;13;Luis Guillermo Velez Osorio;Alajuela;87527046
+2015318865;14;Horacio Augusto Moreno Correa;San Jose;40226063
+2015809614;11;Alejandro Alzate Garces;Puntarenas;81591992
+2017697145;13;Javier Ignacio Aguilar Gomez;San Jose;30895865
+2016056993;11;Adolfo Leon Correa Silva;San Jose;55628815
+2016505800;18;Gustavo Hernan Rodriguez Vallejo;Limon;71855778
+2015078271;12;Oscar Dario Gomez Giraldo;San Jose;76312677
+2015647679;12;Gonzalo Lopez Gaviria;Alajuela;34297950
+2015867306;11;Hector Manuel Pineda;Guanacaste;68860165
+2016539704;18;Maria Victoria Arias Gomez;San Jose;55988859
+2017720962;18;Luis Alfonso Escobar Trujillo;Alajuela;40318028
+2016992229;11;Lida Patricia Giraldo Morales;Alajuela;47406351
+2017167155;13;Luis Oliverio Cardenas Moreno;Heredia;52617204
+2017955188;18;Luis Fernando Castro Hernandez;Puntarenas;24579197
+2015202444;18;Julio Cesar Rodriguez Monsalve;Heredia;60396263
+2015868348;12;Alvaro de Jesus Saldarriaga Vasquez;Guanacaste;59607647
+2016695429;13;Luis Anibal Sepulveda Villada;Heredia;62527076
+2016388571;18;Beatriz Elena Puerta Bolivar;Puntarenas;71146996
+2016480863;13;Angel Gabriel Arrubla Ortiz;Limon;31722402
+2015906560;14;Alvaro de Jesus Bocanumenth Puerta;Guanacaste;45196855
+2017683116;12;Fabio Alexander Florez Garcia;Guanacaste;76267600
+2015233439;18;Hector Dario Bermudez Saldarriaga;Limon;32140612
+2015246359;18;Javier Ignacio Molina Cano ;Limon;66322159
+2016888461;12;Lillian Eugenia Gomez Alvarez ;Puntarenas;25239937
+2015487102;13;Sixto Naranjo Marin ;Heredia;21825007
+2016873510;13;Gerardo Emilio Duque Gutierrez ;Heredia;48672759
+2016352406;18;Jhony Alberto Saenz Hurtado ;Guanacaste;73913318
+2016597140;13;German Antonio Lotero Upegui ;Puntarenas;63740270
+2016335915;13;Oscar Dario Murillo Gonzalez ;San Jose;38788013
+2016836008;18;Augusto Osorno Gil ;Heredia;76975130
+2016801628;13;Cesar Oswaldo Palacio Martinez ;Limon;70233860
+2015096254;18;Gloria Amparo Alzate Agudelo ;San Jose;29797884
+2016497874;11;Hector Ivan Gonzalez Castano ;San Jose;20308019
+2015451936;12;Beatriz Elena Osorio Laverde ;Guanacaste;31610755
+2017377655;14;Herman Correa Ramirez ;Alajuela;26856788
+2016203307;18;Carlos Mario Montoya Serna ;Limon;64278185
+2016048940;18;Carlos Augusto Giraldo ;Heredia;20514848
+2016866038;18;Arturo Tabares Mora ;Puntarenas;80563069
+2017072286;14;William de J Ramirez Vasquez ;Guanacaste;47647896
+2015559893;13;Jaime Lopez Tobon ;Alajuela;87310256
+2016780439;13;Gloria Elena Sanclemente Zea ;Heredia;71755991
+2016177213;18;Carlos Alberto Villegas Lopera ;Limon;42243426
+2015274099;18;Jorge Uribe Botero ;Alajuela;82802053
+2015513541;18;Maria Isabel Lopez Gaviria ;Puntarenas;23376151
+2017001660;18;Alfredo Tobon Tobon ;Guanacaste;23946673
+2017842422;13;Hector Damian Mosquera Benitez ;Heredia;88491170
+2016115094;12;Alvaro Ivan Berdugo Lopez ;Heredia;38749408
+2016697129;18;Carlos Alberto Zarate Yepez ;Heredia;55623188
+2016180568;18;Hernan Dario Hurtado Perez ;Puntarenas;40139654
+2016242380;13;Jorge Leon Ruiz Ruiz ;Heredia;32501559
+2015136716;11;John Jairo Duque Garcia ;Heredia;62979270
+2017912879;12;Armid Benjamin Munoz Ramirez ;San Jose;86022341

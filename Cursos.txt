@@ -1,0 +1,29 @@
+13;448;Introduccion a la programacion
+11;117;Elemento de computacion
+14;143;Investigacion de operaciones
+14;722;Matematica general
+11;350;Taller de programacion
+12;135;Fundamentos de la organizacion de computadoras
+13;473;Visualizacion de la informacion
+13;799;Desarrollo para dispositivos moviles
+11;853;Lenguajes de programacion
+12;368;Estructuras de datos
+18;845;Arquitectura de computadoras
+18;654;Matematica discreta
+12;793;Calculo
+13;102;Algebra lineal
+14;709;Estadistica
+18;697;Probabilidades
+14;504;Aseguramiento de la calidad de software
+18;229;Requerimientos de software
+12;335;Administracion de proyectos
+13;188;Bases de datos
+13;944;Redes
+18;175;Simulacion de sistemas naturales
+18;617;Computacion y sociedad
+13;463;Sistemas operativos
+14;321;Compiladores e interpretes
+14;356;Programacion orientada a objetos
+11;370;Diseño de software
+13;105;Ingles I
+13;837;Comunicacion tecnica
