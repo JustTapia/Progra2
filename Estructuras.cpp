@@ -400,13 +400,11 @@ bool Grupo::buscarNodo(pCursoEstudiante r, int codigo) {
 		return false;
 	}
 	if (codigo < r->codigo) {
-		buscarNodo(r->Hizq, codigo);
-	}
-	else if (codigo == r->codigo) {
+		return buscarNodo(r->Hizq, codigo);
+	}else if (codigo == r->codigo) {
 		return true;
-	}
-	else {
-		buscarNodo(r->Hder, codigo);
+	}else {
+		return buscarNodo(r->Hder, codigo);
 	}
 }
 
@@ -1181,9 +1179,276 @@ void ArbolCarreras::cargarEstudiantesCurso(string txt, pProfesoresEstudiantes es
 	archivo.close();
 }
 
-
 void ArbolCarreras::InordenR(pCarrera R){
 	return R->InordenR(R->primerCurso);
+}
+
+class Nodo {
+public:
+	Nodo(string pDato, string pCurso, string pGrupo, string pAccion);
+private:
+	int estudiante;
+	int curso;
+	int grupo;
+	int accion;
+	friend class Cola;
+	friend class Mostrador;
+};
+typedef Nodo *pNodo;
+
+Nodo::Nodo(string pEstudiante, string pCurso, string pGrupo, string pAccion) {
+	estudiante = stoi(pEstudiante);
+	curso = stoi(pCurso);
+	grupo = stoi(pGrupo);
+	accion = stoi(pAccion);
+};
+
+class Mostrador {
+public:
+	Mostrador();
+private:
+	Mostrador * siguiente;
+	int atendidos;
+	friend class Cola;
+	friend class ListaMostradores;
+};
+typedef Mostrador *pMostrador;
+
+Mostrador::Mostrador() {
+	atendidos = 0;
+	siguiente = NULL;
+}
+
+class ListaMostradores {
+public:
+	ListaMostradores();
+	void crearReporte();
+private:
+	pMostrador primero;
+	pMostrador segundo;
+	pMostrador tercero;
+	friend class Cola;
+};
+typedef ListaMostradores *pListaMostradores;
+
+ListaMostradores::ListaMostradores() {
+	tercero = new Mostrador();
+	segundo = new Mostrador();
+	segundo->siguiente = tercero;
+	primero = new Mostrador();
+	primero->siguiente = segundo;
+}
+
+void ListaMostradores::crearReporte() {
+	string reporte = "";
+	reporte += "Mostrador 1\n";
+	reporte += "Personas Atenddidas: ";
+	reporte += to_string(primero->atendidos);
+	reporte += "\n-------------------------------\n";
+	reporte += "Mostrador 2\n";
+	reporte += "Personas Atenddidas: ";
+	reporte += to_string(segundo->atendidos);
+	reporte += "\n-------------------------------\n";
+	reporte += "Mostrador 3\n";
+	reporte += "Personas Atenddidas: ";
+	reporte += to_string(tercero->atendidos);
+	ofstream archivoReporte;
+	archivoReporte.open("Reporte Personas Atendidas por Mostrador.txt");
+	archivoReporte << reporte;
+	archivoReporte.close();
+}
+
+class Cola {
+public:
+	Cola(pListaMostradores mostradores, pProfesoresEstudiantes pEstudiantes, pProfesoresEstudiantes pProfesores, pArbolCarreras pCarreras);
+	void escribirArchivo(string str);
+	void correrDatos();
+	void actualizar();
+	void dormir();
+	void atenderPrimero();
+	void atenderSegundo();
+	void atenderTercero();
+	void threadAtender();
+	//void crearReporteProfesoresCursos();
+	//void crearReporteEstudianteGrupos();
+	//void crearReporteEstudianteCarreras();
+	//void crearReporteProfesorCarreras();
+	//void crearReportes();
+private:
+	pNodo cola[10];
+	int inicio;
+	int fin;
+	int atendidos;
+	pListaMostradores mostradores;
+	pProfesoresEstudiantes estudiantes;
+	pProfesoresEstudiantes profesores;
+	pArbolCarreras carreras;
+	mutex pausa;
+};
+typedef Cola *pCola;
+
+Cola::Cola(pListaMostradores Pmostradores, pProfesoresEstudiantes pEstudiantes, pProfesoresEstudiantes pProfesores, pArbolCarreras pCarreras) {
+	inicio = 0;
+	fin = -1;
+	mostradores = Pmostradores;
+	estudiantes = pEstudiantes;
+	profesores = pProfesores;
+	carreras = pCarreras;
+	atendidos = 0;
+}
+
+bool actualizado = false;
+bool vacio = false;
+
+void Cola::escribirArchivo(string str) {
+	ofstream archivo;
+	archivo.open("Atencion - copia.txt", ios::out);
+	archivo << str;
+	archivo.close();
+}
+
+void Cola::correrDatos() {
+	if (inicio <= fin) {
+		int inicioAux = 0;
+		while (inicio <= fin) {
+			cola[inicioAux] = cola[inicio];
+			inicio++;
+			inicioAux++;
+		}
+		fin = inicioAux;
+	}
+	else {
+		fin = 0;
+	}
+}
+
+void Cola::actualizar() {
+	pausa.lock();
+	correrDatos();
+	inicio = 0;
+	string texto;
+	string str;
+	ifstream archivo;
+	archivo.open("Atencion - copia.txt", ios::in);
+	if (archivo.fail()) {
+		cout << "No se pudo abrir el archivo";
+		exit(1);
+	}
+	while (!archivo.eof()) {
+		while (fin < 10) {
+			getline(archivo, texto);
+			//cout << "Hola-------------------" << endl;
+			if (texto == "\n" || texto == "") {
+				cout << atendidos << endl;
+				break;
+			}
+			else {
+				string datos[4];
+				int actual = 0;
+				for (int i = 0; i != texto.length(); i++) {
+					if (texto[i] == ';') {
+						i++;
+						actual++;
+					}
+					datos[actual] += texto[i];
+				}
+				pNodo temp = new Nodo(datos[0], datos[1], datos[2], datos[3]);
+				cola[fin] = temp;
+				atendidos++;
+				fin++;
+			}
+		}
+		getline(archivo, texto);
+		str += texto + "\n";
+	}
+	fin--;
+	escribirArchivo(str);
+	archivo.close();
+}
+
+void Cola::dormir() {
+	while (!vacio) {
+		actualizado = false;
+		actualizar();
+		this_thread::sleep_for(3s);
+	}
+}
+
+void Cola::atenderPrimero() {
+	while (true) {
+		if (inicio <= fin && actualizado == true) {
+			pausa.lock();
+			pNodo prueba = cola[inicio];
+			inicio += 1;
+			pausa.unlock();
+			string datos[5];
+			datos[0] = prueba->estudiante;
+			datos[1] = prueba->curso;
+			datos[2] = prueba->grupo;
+			datos[4] = prueba->accion;
+			//carreras->atender(datos, estudiantes);
+			mostradores->primero->atendidos++;
+			this_thread::sleep_for(2s);
+		}
+		else if (vacio == true) {
+			break;
+		}
+	}
+}
+
+void Cola::atenderSegundo() {
+	while (true) {
+		if (inicio <= fin && actualizado == true) {
+			pausa.lock();
+			pNodo prueba = cola[inicio];
+			inicio += 1;
+			pausa.unlock();
+			string datos[5];
+			datos[0] = prueba->estudiante;
+			datos[1] = prueba->curso;
+			datos[2] = prueba->grupo;
+			datos[4] = prueba->accion;
+			//carreras->atender(datos, estudiantes);
+			mostradores->segundo->atendidos++;
+			this_thread::sleep_for(2s);
+		}
+		else if (vacio == true) {
+			break;
+		}
+	}
+}
+
+void Cola::atenderTercero() {
+	while (true) {
+		if (inicio <= fin && actualizado == true) {
+			pausa.lock();
+			pNodo prueba = cola[inicio];
+			inicio += 1;
+			pausa.unlock();
+			string datos[5];
+			datos[0] = prueba->estudiante;
+			datos[1] = prueba->curso;
+			datos[2] = prueba->grupo;
+			datos[4] = prueba->accion;
+			//carreras->atender(datos, estudiantes);
+			mostradores->tercero->atendidos++;
+			this_thread::sleep_for(2s);
+		}
+		else if (vacio == true) {
+			break;
+		}
+	}
+}
+
+void Cola::threadAtender() {
+	thread actualizar(&Cola::dormir, this);
+	thread mostrador1(&Cola::atenderPrimero, this);
+	thread mostrador2(&Cola::atenderSegundo, this);
+	thread mostrador3(&Cola::atenderTercero, this);
+	actualizar.join();
+	mostrador1.join();
+	mostrador2.join();
+	mostrador3.join();
 }
 
 int main() {
@@ -1194,13 +1459,11 @@ int main() {
 	ArbolCarreras carreras;
 	carreras.leerCarrera("Carreras.txt");
 	carreras.cargarCurso("Cursos.txt");
-	carreras.cargarGrupos("Grupos.txt", &profesores);//con profesores
+	carreras.cargarGrupos("Grupos.txt", &profesores);
 	carreras.cargarEstudiantesCurso("Estudiante-Curso.txt", &estudiantes);
-	/*ListaString lista;
-	/*lista.crearListaAtencion("Atencion.txt");
-	/*ListaMostradores mostradores;
-	/*Cola cola(&lista, &mostradores, &estudiantes, &profesores, &carreras);
-	/*cola.threadAtender();
+	ListaMostradores mostradores;
+	Cola cola(&mostradores, &estudiantes, &profesores, &carreras);
+	cola.threadAtender();
 	/*cola.crearReportes();*/
 	system("pause");
 	return 0;
