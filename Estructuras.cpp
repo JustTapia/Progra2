@@ -360,7 +360,11 @@ public:
 	void crearNodo(int valor);
 	void reparto(pCursoEstudiante);
 	void insertarNodo(pCursoEstudiante, pCursoEstudiante);
+	void matricular(pCursoEstudiante temp, pCursoEstudiante ins);
 	void giro(pCursoEstudiante, pCursoEstudiante, pCursoEstudiante);
+	void matricular(int valor);
+	void desmatricular(pCursoEstudiante r, int codigo);
+	void congelar(pCursoEstudiante r, int codigo);
 	bool buscarNodo(pCursoEstudiante raiz, int codigo);
 private:
 	int carrera;
@@ -490,6 +494,50 @@ void Grupo::insertarNodo(pCursoEstudiante temp, pCursoEstudiante ins) {
 	}
 }
 
+void Grupo::matricular(pCursoEstudiante temp, pCursoEstudiante ins) {
+	if (raizCursoEstudiante == NULL) {
+		ins->nivel = 1;
+		raizCursoEstudiante = ins;
+	}
+	else if (ins->codigo < temp->codigo) {
+		if (temp->Hizq != NULL)
+			return insertarNodo(temp->Hizq, ins);
+		if (temp->anterior != NULL) {
+			ins->Hder = temp;
+			temp->anterior->Hder = ins;
+			ins->anterior = temp->anterior;
+		}
+		temp->Hizq = ins;
+		temp->anterior = ins;
+		ins->padre = NULL;
+		giro(ins, temp, NULL);
+		ins->nivel = temp->nivel;
+		while (ins->anterior != NULL) {
+			ins = ins->anterior;
+		}
+		reparto(ins);
+	}
+	else if (ins->codigo > temp->codigo) {
+		if (temp->Hder != NULL)
+			return insertarNodo(temp->Hder, ins);
+		temp->Hder = ins;
+		ins->anterior = temp;
+		ins->padre = NULL;
+		ins->nivel = temp->nivel;
+		while (ins->anterior != NULL) {
+			ins = ins->anterior;
+		}
+		reparto(ins);
+	}else {
+		if (temp->estado == 2) {
+			temp->estado = 1;
+		}else {
+			matriculados--;
+		}
+		return;
+	}
+}
+
 void Grupo::giro(pCursoEstudiante ins, pCursoEstudiante temp, pCursoEstudiante rama) {
 	if (temp == raizCursoEstudiante) {
 		raizCursoEstudiante = ins;
@@ -513,6 +561,53 @@ void Grupo::giro(pCursoEstudiante ins, pCursoEstudiante temp, pCursoEstudiante r
 	}
 }
 
+void Grupo::matricular(int valor) {
+	if (matriculados - congelados - desmatriculados < cupos){
+	pCursoEstudiante temp = new CursoEstudiante(valor);
+		matriculados++;
+		matricular(raizCursoEstudiante, temp);
+		cout << valor << " matriculado" << endl;
+	}
+}
+
+void Grupo::desmatricular(pCursoEstudiante r, int codigo) {
+	while (r != NULL) {
+		if (codigo < r->codigo) {
+			r = r->Hizq;
+		}
+		else if (codigo == r->codigo) {
+			if (r->estado == 1) {
+				r->estado = 2;
+				desmatriculados++;
+				cout << codigo <<" desmatriculado" << endl;
+				break;
+			}
+		}
+		else {
+			r = r->Hder;
+		}
+	}
+}
+
+void Grupo::congelar(pCursoEstudiante r, int codigo) {
+	while (r != NULL) {
+		if (codigo < r->codigo) {
+			r = r->Hizq;
+		}
+		else if (codigo == r->codigo) {
+			if (r->estado == 1) {
+				r->estado = 3;
+				congelados++;
+				cout << codigo << " congelado" << endl;
+				break;
+			}
+		}
+		else {
+			r = r->Hder;
+		}
+	}
+}
+
 class Curso {
 public:
 	Curso(int pCodigo, string pNombre,Curso *pPadre) {
@@ -531,6 +626,7 @@ public:
 	void RotacionDobleIzquierda(pGrupo abuelo, pGrupo padre, pGrupo hijo);
 	void RotacionDobleDerecha(pGrupo abuelo, pGrupo padre, pGrupo hijo);
 	void insertarEstudiante(string datos[]);
+	void atender(int datos[]);
 	void InordenR(pGrupo R, string lado);
 private:
 	int codigo;
@@ -747,6 +843,35 @@ void Curso::insertarEstudiante(string datos[]) {
 	}
 }
 
+void Curso::atender(int datos[]) {
+	pGrupo aux = raiz;
+	int codGrupo = datos[2];
+	while (aux != NULL) {
+		if (codGrupo == aux->codigo) {
+			switch (datos[3]) {
+			case 1:
+				aux->matricular(datos[0]);
+				break;
+			case 2:
+				aux->desmatricular(aux->raizCursoEstudiante, datos[0]);
+				break;
+			case 3:
+				aux->congelar(aux->raizCursoEstudiante, datos[0]);
+				break;
+			default:
+				break;
+			}
+			break;
+		}
+		else if (codGrupo < aux->codigo) {
+			aux = aux->Hizq;
+		}
+		else {
+			aux = aux->Hder;
+		}
+	}
+}
+
 void Curso::InordenR(pGrupo R, string lado) {
 	if (R != NULL) {
 		InordenR(R->Hizq, "izq");
@@ -768,6 +893,7 @@ public:
 	void RotacionDobleDerecha(pCurso abuelo, pCurso padre, pCurso hijo);
 	void insertarGrupo(string datos[]);
 	void insertarEstudiante(string datos[]);
+	void atender(int datos[]);
 	void InordenR(pCurso R);
 private:
 	bool Hh;
@@ -1006,6 +1132,23 @@ void Carrera::insertarEstudiante(string datos[]) {
 	}
 }
 
+void Carrera::atender(int datos[]) {
+	pCurso aux = primerCurso;
+	int codCurso = datos[1];
+	while (aux != NULL) {
+		if (codCurso == aux->codigo) {
+			aux->atender(datos);
+			break;
+		}
+		else if (codCurso < aux->codigo) {
+			aux = aux->Hizq;
+		}
+		else {
+			aux = aux->Hder;
+		}
+	}
+}
+
 void Carrera::InordenR(pCurso R) {
 	return R->InordenR(R->raiz, "");
 }
@@ -1019,6 +1162,7 @@ public:
 	void cargarCurso(string txt);
 	void cargarGrupos(string txt, pProfesoresEstudiantes profesores);
 	void cargarEstudiantesCurso(string txt, pProfesoresEstudiantes lista);
+	void atender(int datos[], pProfesoresEstudiantes estudiantes);
 	void InordenR(pCarrera R);
 };
 typedef ArbolCarreras *pArbolCarreras;
@@ -1179,6 +1323,25 @@ void ArbolCarreras::cargarEstudiantesCurso(string txt, pProfesoresEstudiantes es
 	archivo.close();
 }
 
+void ArbolCarreras::atender(int datos[], pProfesoresEstudiantes estudiantes) {
+	int codCarrera = estudiantes->buscarCarrera(datos[0]);
+	if (codCarrera != 0) {
+		pCarrera aux = raiz;
+		while (aux != NULL) {
+			if (codCarrera == aux->codigo) {
+				aux->atender(datos);
+				break;
+			}
+			else if (codCarrera < aux->codigo) {
+				aux = aux->Hizq;
+			}
+			else {
+				aux = aux->Hder;
+			}
+		}
+	}
+}
+
 void ArbolCarreras::InordenR(pCarrera R){
 	return R->InordenR(R->primerCurso);
 }
@@ -1191,7 +1354,9 @@ private:
 	int curso;
 	int grupo;
 	int accion;
+	Nodo *siguiente;
 	friend class Cola;
+	friend class ListaString;
 	friend class Mostrador;
 };
 typedef Nodo *pNodo;
@@ -1202,6 +1367,63 @@ Nodo::Nodo(string pEstudiante, string pCurso, string pGrupo, string pAccion) {
 	grupo = stoi(pGrupo);
 	accion = stoi(pAccion);
 };
+
+class ListaString {
+public:
+	ListaString() { primero = NULL; };
+	bool listaVacia() { return primero == NULL; };
+	void crearListaAtencion(string txt);
+	void insertarFinal(string pEstudiante, string pCurso, string pGrupo, string pAtencion);
+	void eliminarInicio();
+private:
+	pNodo primero;
+	friend class Cola;
+	friend class Mostrador;
+	friend class ListaMostradores;
+};
+typedef ListaString *pLista;
+
+void ListaString::crearListaAtencion(string txt) {
+	ifstream archivo;
+	string texto;
+	archivo.open(txt, ios::in);
+	if (archivo.fail()) {
+		cout << "No se pudo abrir el archivo\n";
+		system("pause");
+		exit(1);
+	}
+	while (!archivo.eof()) {
+		getline(archivo, texto);
+		string datos[4];
+		int actual = 0;
+		for (int i = 0; i != texto.length(); i++) {
+			if (texto[i] == ';') {
+				actual++;
+				i++;
+			}
+			datos[actual] += texto[i];
+		}
+		insertarFinal(datos[0], datos[1], datos[2], datos[3]);
+	}
+}
+
+void ListaString::insertarFinal(string pEstudiante, string pCurso, string pGrupo, string pAtencion) {
+	if (listaVacia()) {
+		primero = new Nodo(pEstudiante, pCurso, pGrupo, pAtencion);
+	}
+	else {
+		pNodo aux = primero;
+		while (aux->siguiente != NULL)
+			aux = aux->siguiente;
+		aux->siguiente = new Nodo(pEstudiante, pCurso, pGrupo, pAtencion);
+	}
+}
+
+void ListaString::eliminarInicio() {
+	pNodo aux = primero;
+	primero = primero->siguiente;
+	delete aux;
+}
 
 class Mostrador {
 public:
@@ -1260,7 +1482,7 @@ void ListaMostradores::crearReporte() {
 
 class Cola {
 public:
-	Cola(pListaMostradores mostradores, pProfesoresEstudiantes pEstudiantes, pProfesoresEstudiantes pProfesores, pArbolCarreras pCarreras);
+	Cola(pLista pLista, pListaMostradores Pmostradores, pProfesoresEstudiantes pEstudiantes, pProfesoresEstudiantes pProfesores, pArbolCarreras pCarreras);
 	void escribirArchivo(string str);
 	void correrDatos();
 	void actualizar();
@@ -1279,6 +1501,7 @@ private:
 	int inicio;
 	int fin;
 	int atendidos;
+	pLista lista;
 	pListaMostradores mostradores;
 	pProfesoresEstudiantes estudiantes;
 	pProfesoresEstudiantes profesores;
@@ -1287,9 +1510,10 @@ private:
 };
 typedef Cola *pCola;
 
-Cola::Cola(pListaMostradores Pmostradores, pProfesoresEstudiantes pEstudiantes, pProfesoresEstudiantes pProfesores, pArbolCarreras pCarreras) {
+Cola::Cola(pLista plista, pListaMostradores Pmostradores, pProfesoresEstudiantes pEstudiantes, pProfesoresEstudiantes pProfesores, pArbolCarreras pCarreras) {
 	inicio = 0;
 	fin = -1;
+	lista = plista;
 	mostradores = Pmostradores;
 	estudiantes = pEstudiantes;
 	profesores = pProfesores;
@@ -1324,46 +1548,33 @@ void Cola::correrDatos() {
 
 void Cola::actualizar() {
 	pausa.lock();
-	correrDatos();
-	inicio = 0;
-	string texto;
-	string str;
-	ifstream archivo;
-	archivo.open("Atencion - copia.txt", ios::in);
-	if (archivo.fail()) {
-		cout << "No se pudo abrir el archivo";
-		exit(1);
-	}
-	while (!archivo.eof()) {
-		while (fin < 10) {
-			getline(archivo, texto);
-			//cout << "Hola-------------------" << endl;
-			if (texto == "\n" || texto == "") {
-				cout << atendidos << endl;
-				break;
-			}
-			else {
-				string datos[4];
-				int actual = 0;
-				for (int i = 0; i != texto.length(); i++) {
-					if (texto[i] == ';') {
-						i++;
-						actual++;
-					}
-					datos[actual] += texto[i];
-				}
-				pNodo temp = new Nodo(datos[0], datos[1], datos[2], datos[3]);
-				cola[fin] = temp;
-				atendidos++;
-				fin++;
-			}
+	if (inicio <= fin) {
+		int inicioAux = 0;
+		while (inicio <= fin) {
+			cola[inicioAux] = cola[inicio];
+			inicio++;
+			inicioAux++;
 		}
-		getline(archivo, texto);
-		str += texto + "\n";
+		fin = inicioAux;
 	}
-	fin--;
-	escribirArchivo(str);
-	archivo.close();
+	else {
+		fin = 0;
+	}
+	inicio = 0;
+	while (fin<10) {
+		if (lista->primero == NULL) {
+			vacio = true;
+			cout << atendidos << endl;
+			break;
+		}
+		cola[fin] = lista->primero;
+		lista->primero = lista->primero->siguiente;
+		fin++;
+		atendidos++;
+	}
+	fin -= 1;
+	actualizado = true;
+	pausa.unlock();
 }
 
 void Cola::dormir() {
@@ -1381,14 +1592,13 @@ void Cola::atenderPrimero() {
 			pNodo prueba = cola[inicio];
 			inicio += 1;
 			pausa.unlock();
-			string datos[5];
+			int datos[4];
 			datos[0] = prueba->estudiante;
 			datos[1] = prueba->curso;
 			datos[2] = prueba->grupo;
-			datos[4] = prueba->accion;
-			//carreras->atender(datos, estudiantes);
+			datos[3] = prueba->accion;
+			carreras->atender(datos, estudiantes);
 			mostradores->primero->atendidos++;
-			this_thread::sleep_for(2s);
 		}
 		else if (vacio == true) {
 			break;
@@ -1403,14 +1613,13 @@ void Cola::atenderSegundo() {
 			pNodo prueba = cola[inicio];
 			inicio += 1;
 			pausa.unlock();
-			string datos[5];
+			int datos[4];
 			datos[0] = prueba->estudiante;
 			datos[1] = prueba->curso;
 			datos[2] = prueba->grupo;
-			datos[4] = prueba->accion;
-			//carreras->atender(datos, estudiantes);
+			datos[3] = prueba->accion;
+			carreras->atender(datos, estudiantes);
 			mostradores->segundo->atendidos++;
-			this_thread::sleep_for(2s);
 		}
 		else if (vacio == true) {
 			break;
@@ -1425,14 +1634,13 @@ void Cola::atenderTercero() {
 			pNodo prueba = cola[inicio];
 			inicio += 1;
 			pausa.unlock();
-			string datos[5];
+			int datos[4];
 			datos[0] = prueba->estudiante;
 			datos[1] = prueba->curso;
 			datos[2] = prueba->grupo;
-			datos[4] = prueba->accion;
-			//carreras->atender(datos, estudiantes);
+			datos[3] = prueba->accion;
+			carreras->atender(datos, estudiantes);
 			mostradores->tercero->atendidos++;
-			this_thread::sleep_for(2s);
 		}
 		else if (vacio == true) {
 			break;
@@ -1461,8 +1669,10 @@ int main() {
 	carreras.cargarCurso("Cursos.txt");
 	carreras.cargarGrupos("Grupos.txt", &profesores);
 	carreras.cargarEstudiantesCurso("Estudiante-Curso.txt", &estudiantes);
+	ListaString lista;
+	lista.crearListaAtencion("Atencion.txt");
 	ListaMostradores mostradores;
-	Cola cola(&mostradores, &estudiantes, &profesores, &carreras);
+	Cola cola(&lista, &mostradores, &estudiantes, &profesores, &carreras);
 	cola.threadAtender();
 	/*cola.crearReportes();*/
 	system("pause");
